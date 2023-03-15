@@ -36,7 +36,7 @@ proto_compile_attrs = {
     ),
     "output_mode": attr.string(
         default = "PREFIXED",
-        values = ["PREFIXED", "NO_PREFIX"],
+        values = ["PREFIXED", "NO_PREFIX", "NO_PREFIX_FLAT"],
         doc = "The output mode for the target. PREFIXED (the default) will output to a directory named by the target within the current package root, NO_PREFIX will output directly to the current package. Using NO_PREFIX may lead to conflicting writes",
     ),
 }
@@ -443,6 +443,8 @@ def proto_compile(ctx, options, extra_protoc_args, extra_protoc_files):
             # In NO_PREFIX mode, we output directly to the package root
             if ctx.attr.output_mode == "PREFIXED":
                 path = ctx.label.name + "/" + path
+            elif ctx.attr.output_mode == "NO_PREFIX_FLAT":
+                path = file.basename                
 
             # Copy file to output
             output_files.append(copy_file(
